@@ -1,0 +1,43 @@
+{% extends 'fire_ui/base.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">Confirmar Exclusão</h5>
+            </div>
+            <div class="card-body">
+                <p class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    Você tem certeza que deseja excluir o foco de queimada <strong>#{{ object.id }}</strong>?
+                </p>
+                <p class="text-muted">Esta ação não poderá ser desfeita.</p>
+                
+                <div class="mb-4">
+                    <h6>Informações do registro:</h6>
+                    <ul>
+                        <li>Data: {{ object.data|date:"d/m/Y" }}</li>
+                        <li>Município: {{ object.municipio.nome }}</li>
+                        <li>Satélite: {{ object.satelite.nome }}</li>
+                    </ul>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'focos-list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
