@@ -5,7 +5,7 @@
 -- Dumped from database version 16.8 (Ubuntu 16.8-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.8 (Ubuntu 16.8-0ubuntu0.24.04.1)
 
--- Started on 2025-04-28 09:11:03 -03
+-- Started on 2025-05-09 16:44:03 -03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,6 +17,25 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- TOC entry 4 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO pg_database_owner;
+
+--
+-- TOC entry 3483 (class 0 OID 0)
+-- Dependencies: 4
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
 
 SET default_tablespace = '';
 
@@ -57,7 +76,7 @@ CREATE SEQUENCE public.focos_de_queimada_id_queimada_seq
 ALTER SEQUENCE public.focos_de_queimada_id_queimada_seq OWNER TO postgres;
 
 --
--- TOC entry 3480 (class 0 OID 0)
+-- TOC entry 3484 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: focos_de_queimada_id_queimada_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -83,7 +102,7 @@ CREATE TABLE public.municipios (
 ALTER TABLE public.municipios OWNER TO postgres;
 
 --
--- TOC entry 3481 (class 0 OID 0)
+-- TOC entry 3485 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: CONSTRAINT ck_area_positiva ON municipios; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -99,23 +118,12 @@ COMMENT ON CONSTRAINT ck_area_positiva ON public.municipios IS 'Verifica se a á
 CREATE TABLE public.regioes_imediatas (
     codigo_regiao integer NOT NULL,
     bioma character varying(30) NOT NULL,
-    area_km2 numeric(10,2) NOT NULL,
     nome_regiao character varying(50) NOT NULL,
-    clima_regiao character varying(50) NOT NULL,
-    CONSTRAINT ck_km2_positivo CHECK ((area_km2 > (0)::numeric))
+    clima_regiao character varying(50) NOT NULL
 );
 
 
 ALTER TABLE public.regioes_imediatas OWNER TO postgres;
-
---
--- TOC entry 3482 (class 0 OID 0)
--- Dependencies: 217
--- Name: CONSTRAINT ck_km2_positivo ON regioes_imediatas; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON CONSTRAINT ck_km2_positivo ON public.regioes_imediatas IS 'Verifica se a área inserida da região é válida';
-
 
 --
 -- TOC entry 221 (class 1259 OID 24638)
@@ -137,24 +145,11 @@ ALTER TABLE public.satelite_queimada OWNER TO postgres;
 
 CREATE TABLE public.satelites (
     id_satelite integer NOT NULL,
-    nome_satelite character varying(30) NOT NULL,
-    agencia character varying(50) NOT NULL,
-    tipo_orbita character varying(50) NOT NULL,
-    status_operacional boolean NOT NULL,
-    CONSTRAINT ck_valor_logico CHECK ((status_operacional = ANY (ARRAY[true, false])))
+    nome_satelite character varying(30) NOT NULL
 );
 
 
 ALTER TABLE public.satelites OWNER TO postgres;
-
---
--- TOC entry 3483 (class 0 OID 0)
--- Dependencies: 220
--- Name: CONSTRAINT ck_valor_logico ON satelites; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON CONSTRAINT ck_valor_logico ON public.satelites IS 'Verifica se o valor lógico adicionado é válido';
-
 
 --
 -- TOC entry 219 (class 1259 OID 24596)
@@ -173,7 +168,7 @@ CREATE SEQUENCE public.satelites_id_satelite_seq
 ALTER SEQUENCE public.satelites_id_satelite_seq OWNER TO postgres;
 
 --
--- TOC entry 3484 (class 0 OID 0)
+-- TOC entry 3486 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: satelites_id_satelite_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -182,7 +177,7 @@ ALTER SEQUENCE public.satelites_id_satelite_seq OWNED BY public.satelites.id_sat
 
 
 --
--- TOC entry 3297 (class 2604 OID 16417)
+-- TOC entry 3302 (class 2604 OID 16417)
 -- Name: focos_de_queimada id_queimada; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -190,7 +185,7 @@ ALTER TABLE ONLY public.focos_de_queimada ALTER COLUMN id_queimada SET DEFAULT n
 
 
 --
--- TOC entry 3298 (class 2604 OID 24600)
+-- TOC entry 3303 (class 2604 OID 24600)
 -- Name: satelites id_satelite; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -198,7 +193,7 @@ ALTER TABLE ONLY public.satelites ALTER COLUMN id_satelite SET DEFAULT nextval('
 
 
 --
--- TOC entry 3469 (class 0 OID 16414)
+-- TOC entry 3472 (class 0 OID 16414)
 -- Dependencies: 216
 -- Data for Name: focos_de_queimada; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -208,29 +203,27 @@ COPY public.focos_de_queimada (id_queimada, data_hora, latitude, longitude, pote
 
 
 --
--- TOC entry 3471 (class 0 OID 16436)
+-- TOC entry 3474 (class 0 OID 16436)
 -- Dependencies: 218
 -- Data for Name: municipios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.municipios (id_municipio, nome_municipio, area_km2, populacao, codigo_regiao) FROM stdin;
-1	Palmas	2000.00	100000	170001
 \.
 
 
 --
--- TOC entry 3470 (class 0 OID 16422)
+-- TOC entry 3473 (class 0 OID 16422)
 -- Dependencies: 217
 -- Data for Name: regioes_imediatas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.regioes_imediatas (codigo_regiao, bioma, area_km2, nome_regiao, clima_regiao) FROM stdin;
-170001	Cerrado	40000.00	Palmas	Tropical de Savana
+COPY public.regioes_imediatas (codigo_regiao, bioma, nome_regiao, clima_regiao) FROM stdin;
 \.
 
 
 --
--- TOC entry 3474 (class 0 OID 24638)
+-- TOC entry 3477 (class 0 OID 24638)
 -- Dependencies: 221
 -- Data for Name: satelite_queimada; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -240,26 +233,26 @@ COPY public.satelite_queimada (id_queimada, id_satelite) FROM stdin;
 
 
 --
--- TOC entry 3473 (class 0 OID 24597)
+-- TOC entry 3476 (class 0 OID 24597)
 -- Dependencies: 220
 -- Data for Name: satelites; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.satelites (id_satelite, nome_satelite, agencia, tipo_orbita, status_operacional) FROM stdin;
+COPY public.satelites (id_satelite, nome_satelite) FROM stdin;
 \.
 
 
 --
--- TOC entry 3485 (class 0 OID 0)
+-- TOC entry 3487 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: focos_de_queimada_id_queimada_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.focos_de_queimada_id_queimada_seq', 5, true);
+SELECT pg_catalog.setval('public.focos_de_queimada_id_queimada_seq', 6, true);
 
 
 --
--- TOC entry 3486 (class 0 OID 0)
+-- TOC entry 3488 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: satelites_id_satelite_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -268,7 +261,7 @@ SELECT pg_catalog.setval('public.satelites_id_satelite_seq', 1, false);
 
 
 --
--- TOC entry 3304 (class 2606 OID 16419)
+-- TOC entry 3307 (class 2606 OID 16419)
 -- Name: focos_de_queimada focos_de_queimada_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -277,7 +270,7 @@ ALTER TABLE ONLY public.focos_de_queimada
 
 
 --
--- TOC entry 3320 (class 2606 OID 24642)
+-- TOC entry 3323 (class 2606 OID 24642)
 -- Name: satelite_queimada pk_ligacao_queimada_satelite; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -286,7 +279,7 @@ ALTER TABLE ONLY public.satelite_queimada
 
 
 --
--- TOC entry 3312 (class 2606 OID 16442)
+-- TOC entry 3315 (class 2606 OID 16442)
 -- Name: municipios pk_municipio; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -295,7 +288,7 @@ ALTER TABLE ONLY public.municipios
 
 
 --
--- TOC entry 3308 (class 2606 OID 16428)
+-- TOC entry 3311 (class 2606 OID 16428)
 -- Name: regioes_imediatas pk_regiao; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -304,7 +297,7 @@ ALTER TABLE ONLY public.regioes_imediatas
 
 
 --
--- TOC entry 3316 (class 2606 OID 24602)
+-- TOC entry 3319 (class 2606 OID 24602)
 -- Name: satelites pk_satelite; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -313,7 +306,7 @@ ALTER TABLE ONLY public.satelites
 
 
 --
--- TOC entry 3306 (class 2606 OID 16421)
+-- TOC entry 3309 (class 2606 OID 16421)
 -- Name: focos_de_queimada unq_foco_queimada; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -322,7 +315,7 @@ ALTER TABLE ONLY public.focos_de_queimada
 
 
 --
--- TOC entry 3314 (class 2606 OID 24632)
+-- TOC entry 3317 (class 2606 OID 24632)
 -- Name: municipios unq_nome_municipio; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -331,7 +324,7 @@ ALTER TABLE ONLY public.municipios
 
 
 --
--- TOC entry 3318 (class 2606 OID 24604)
+-- TOC entry 3321 (class 2606 OID 24604)
 -- Name: satelites unq_nome_satelite; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -340,7 +333,7 @@ ALTER TABLE ONLY public.satelites
 
 
 --
--- TOC entry 3310 (class 2606 OID 24613)
+-- TOC entry 3313 (class 2606 OID 24613)
 -- Name: regioes_imediatas unq_regiao; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -349,7 +342,7 @@ ALTER TABLE ONLY public.regioes_imediatas
 
 
 --
--- TOC entry 3323 (class 2606 OID 24643)
+-- TOC entry 3326 (class 2606 OID 24643)
 -- Name: satelite_queimada fk_id_queimada; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -358,7 +351,7 @@ ALTER TABLE ONLY public.satelite_queimada
 
 
 --
--- TOC entry 3324 (class 2606 OID 24648)
+-- TOC entry 3327 (class 2606 OID 24648)
 -- Name: satelite_queimada fk_id_satelite; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -367,7 +360,7 @@ ALTER TABLE ONLY public.satelite_queimada
 
 
 --
--- TOC entry 3322 (class 2606 OID 16443)
+-- TOC entry 3325 (class 2606 OID 16443)
 -- Name: municipios fk_municipios; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -376,7 +369,7 @@ ALTER TABLE ONLY public.municipios
 
 
 --
--- TOC entry 3321 (class 2606 OID 16448)
+-- TOC entry 3324 (class 2606 OID 16448)
 -- Name: focos_de_queimada fk_queimada; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -384,7 +377,7 @@ ALTER TABLE ONLY public.focos_de_queimada
     ADD CONSTRAINT fk_queimada FOREIGN KEY (id_municipio) REFERENCES public.municipios(id_municipio);
 
 
--- Completed on 2025-04-28 09:11:04 -03
+-- Completed on 2025-05-09 16:44:03 -03
 
 --
 -- PostgreSQL database dump complete
