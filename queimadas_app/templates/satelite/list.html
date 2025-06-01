@@ -1,0 +1,38 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Satélites</h2>
+
+<a href="{% url 'satelite_create' %}" class="btn btn-primary mb-3">Adicionar Satélite</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>País de Origem</th>
+            <th>Tipo de Órbita</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for satelite in satelites %}
+        <tr>
+            <td>{{ satelite.0 }}</td>
+            <td>{{ satelite.1 }}</td>
+            <td>{{ satelite.2 }}</td>
+            <td>{{ satelite.3 }}</td>
+            <td>
+                <a href="{% url 'satelite_update' satelite.0 %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'satelite_delete' satelite.0 %}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">Nenhum satélite encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

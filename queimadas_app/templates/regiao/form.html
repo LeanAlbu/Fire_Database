@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Editar Região{% else %}Adicionar Região{% endif %}</h2>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="{{ form.bioma.id_for_label }}" class="form-label">Bioma</label>
+        {{ form.bioma }}
+        {% if form.bioma.errors %}
+            <div class="text-danger">{{ form.bioma.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.nome_regiao.id_for_label }}" class="form-label">Nome da Região</label>
+        {{ form.nome_regiao }}
+        {% if form.nome_regiao.errors %}
+            <div class="text-danger">{{ form.nome_regiao.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.clima_regiao.id_for_label }}" class="form-label">Clima</label>
+        {{ form.clima_regiao }}
+        {% if form.clima_regiao.errors %}
+            <div class="text-danger">{{ form.clima_regiao.errors }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'regiao_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

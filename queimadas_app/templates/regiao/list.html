@@ -1,0 +1,39 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Regiões Imediatas</h2>
+<a href="{% url 'regiao_create' %}" class="btn btn-primary mb-3">Adicionar Região</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Bioma</th>
+            <th>Nome da Região</th>
+            <th>Clima</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if regioes %}
+            {% for regiao in regioes %}
+            <tr>
+                <td>{{ regiao.0 }}</td>
+                <td>{{ regiao.1 }}</td>
+                <td>{{ regiao.2 }}</td>
+                <td>{{ regiao.3 }}</td>
+                <td>
+                    <a href="{% url 'regiao_update' regiao.0 %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'regiao_delete' regiao.0 %}" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhuma região cadastrada.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Municípios</h2>
+<a href="{% url 'municipio_create' %}" class="btn btn-primary mb-3">Adicionar Município</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome do Município</th>
+            <th>Área (km²)</th>
+            <th>População</th>
+            <th>Região</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if municipios %}
+            {% for municipio in municipios %}
+            <tr>
+                <td>{{ municipio.0 }}</td>
+                <td>{{ municipio.1 }}</td>
+                <td>{{ municipio.2 }}</td>
+                <td>{{ municipio.3 }}</td>
+                <td>{{ municipio.4 }}</td>
+                <td>
+                    <a href="{% url 'municipio_update' municipio.0 %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'municipio_delete' municipio.0 %}" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Nenhum município cadastrado.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+

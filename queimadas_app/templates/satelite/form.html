@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load form_filters %}
+
+
+{% block content %}
+<h2>{% if form.instance.pk %}Editar Satélite{% else %}Adicionar Satélite{% endif %}</h2>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="id_nome_satelite" class="form-label">Nome</label>
+        {{ form.nome_satelite|add_class:"form-control" }}
+        {% if form.nome_satelite.errors %}
+            <div class="text-danger">{{ form.nome_satelite.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_pais_origem" class="form-label">País de Origem</label>
+        {{ form.pais_origem|add_class:"form-control" }}
+        {% if form.pais_origem.errors %}
+            <div class="text-danger">{{ form.pais_origem.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_tipo_orbita" class="form-label">Tipo de Órbita</label>
+        {{ form.tipo_orbita|add_class:"form-select" }}
+        {% if form.tipo_orbita.errors %}
+            <div class="text-danger">{{ form.tipo_orbita.errors }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'satelite_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

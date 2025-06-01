@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Confirmar Exclusão</h2>
+
+<p>Tem certeza de que deseja excluir o satélite <strong>{{ satelite.nome_satelite }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+    <a href="{% url 'satelite_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

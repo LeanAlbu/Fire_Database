@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Dashboard - Monitoramento de Queimadas</h1>
+    
+    <!-- Summary Cards Section -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Focos</h5>
+                    <p class="card-text display-4">{{ total_focos|default:"0" }}</p>
+                    <a href="{% url 'foco_list' %}" class="text-white">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Municípios Monitorados</h5>
+                    <p class="card-text display-4">{{ total_municipios|default:"0" }}</p>
+                    <a href="{% url 'municipio_list' %}" class="text-white">Ver lista</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Regiões</h5>
+                    <p class="card-text display-4">{{ total_regioes|default:"0" }}</p>
+                    <a href="{% url 'regiao_list' %}" class="text-white">Ver regiões</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Satélites</h5>
+                    <p class="card-text display-4">{{ total_satelites|default:"0" }}</p>
+                    <a href="{% url 'satelite_list' %}" class="text-white">Ver satélites</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consultas Especiais - SQL cru -->
+    <div class="row mb-4">
+        <!-- Agregados Município -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>Estatísticas Gerais dos Municípios</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Média População: {{ agregados_municipio.media_populacao|floatformat:0 }}</li>
+                    <li class="list-group-item">Menor Área: {{ agregados_municipio.menor_area }} km²</li>
+                    <li class="list-group-item">Maior Área: {{ agregados_municipio.maior_area }} km²</li>
+                    <li class="list-group-item">Soma População: {{ agregados_municipio.soma_populacao|floatformat:0 }}</li>
+                    <li class="list-group-item">Total Municípios: {{ agregados_municipio.total_municipios }}</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Municípios Interseção -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5>Municípios que também são nomes de Região</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for municipio in municipios_intersecao %}
+                    <li class="list-group-item">{{ municipio }}</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Nenhum município encontrado</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Municípios na Diferença -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5>Municípios que NÃO são nomes de Região</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for municipio in municipios_diferenca %}
+                    <li class="list-group-item">{{ municipio }}</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Nenhum município encontrado</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Municípios S% 100-500 km2 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5>Municípios entre 100-500km² e nome começando com "S"</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for municipio, area in municipios_s_area_nome %}
+                    <li class="list-group-item">{{ municipio }} ({{ area }} km²)</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Nenhum município encontrado</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Satélites Ordenados -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5>Satélites ordenados</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for nome, pais in satelites_ordenados %}
+                    <li class="list-group-item">{{ nome }} <span class="text-muted">({{ pais }})</span></li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Nenhum satélite encontrado</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Satélites únicos -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h5>Satélites únicos</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for satelite in satelites_unicos %}
+                    <li class="list-group-item">{{ satelite }}</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Nenhum satélite encontrado</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exemplo de mais queries se quiser expandir depois -->
+
+    <!-- Botão de limpar banco de dados com modal -->
+    <button class="btn btn-danger mb-4" data-toggle="modal" data-target="#confirmModal">
+        🧨 Limpar Banco de Dados
+    </button>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Ação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja limpar todo o banco de dados? Essa ação é irreversível.
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'limpar_banco' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Fires Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5>Últimos Focos Registrados</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Localização</th>
+                            <th>Município</th>
+                            <th>Potência</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foco in ultimos_focos %}
+                        <tr>
+                            <td>{{ foco.data_hora|date:"d/m/Y H:i"|default:"-" }}</td>
+                            <td>
+                                {% if foco.latitude and foco.longitude %}
+                                    {{ foco.latitude }}°, {{ foco.longitude }}°
+                                {% else %}
+                                    Não informado
+                                {% endif %}
+                            </td>
+                            <td>{{ foco.id_municipio.nome_municipio|default:"Não identificado" }}</td>
+                            <td>{{ foco.potencia_rad|default:"-" }} MW</td>
+                            <td>
+                                <a href="{% url 'foco_update' foco.id %}" class="btn btn-sm btn-warning">Editar</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">Nenhum foco registrado recentemente</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'foco_list' %}" class="btn btn-primary mt-3">Ver todos os focos</a>
+        </div>
+    </div>
+    
+    <!-- Statistics Section -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Focos por Região</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="regioesChart" width="100%" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Focos nos Últimos 7 Dias</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="dailyChart" width="100%" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Focos por Região Chart
+    const regioesCtx = document.getElementById('regioesChart').getContext('2d');
+    const regioesChart = new Chart(regioesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ regioes_labels|safe }},
+            datasets: [{
+                data: {{ regioes_data|safe }},
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                    '#9966FF', '#FF9F40', '#8AC24A', '#607D8B'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Daily Focos Chart
+    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+    const dailyChart = new Chart(dailyCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ daily_labels|safe }},
+            datasets: [{
+                label: 'Focos de Queimada',
+                data: {{ daily_data|safe }},
+                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Confirmar Exclusão</h4>
+        </div>
+        <div class="card-body">
+            <h5>Tem certeza que deseja excluir este foco de queimada?</h5>
+            <p><strong>ID:</strong> {{ foco.id }}</p>
+            <p><strong>Data/Hora:</strong> {{ foco.data_hora|date:"d/m/Y H:i" }}</p>
+            <p><strong>Localização:</strong> {{ foco.latitude }}°, {{ foco.longitude }}°</p>
+            
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Confirmar Exclusão
+                </button>
+                <a href="{% url 'foco_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
